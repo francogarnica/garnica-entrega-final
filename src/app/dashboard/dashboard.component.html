@@ -1,0 +1,32 @@
+<mat-drawer-container class="example-container" autosize>
+
+
+  <!-- SIDEBAR -->
+  <mat-drawer [mode]="'over'" #drawer class="example-sidenav" mode="side">
+  </mat-drawer>
+  <!-- FIN SIDEBAR -->
+
+  <!-- CONTENT WRAPPER -->
+  <div class="example-sidenav-content">
+
+    <!-- TOOLBAR -->
+    <mat-toolbar color="primary">
+      <button (click)="drawer.toggle()" mat-icon-button class="example-icon"
+        aria-label="Example icon-button with menu icon">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span>Gestión</span>
+    </mat-toolbar>
+    <!-- FIN TOOLBAR -->
+
+    <main class="p-3">
+
+      <!-- APP-HOME TODAVIA SIN FUNCIONALIDAD -->
+      <app-home></app-home>
+      
+      <app-users></app-users>
+    </main>
+
+  </div>
+
+</mat-drawer-container>

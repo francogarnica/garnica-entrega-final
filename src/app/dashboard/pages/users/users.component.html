@@ -1,0 +1,11 @@
+<div class="mb-5">
+    <button (click)="onCreateUser()" mat-flat-button color="primary" type="button">
+        <mat-icon>add</mat-icon>
+        Crear usuario
+    </button>
+</div>
+
+<h1 appAgrandado="20px"> Lista de alumnos: </h1>
+
+<app-users-table [dataSource]="users" (deleteUser)="onDeleteUser($event)"
+    (editUser)="onEditUser($event)"></app-users-table>

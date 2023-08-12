@@ -1,24 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { UserFormDialogComponent } from './components/user-form-dialog/user-form-dialog.component';
 import { User } from './components/models';
+import { UserService } from './user.service';
+import { Observable, Subject } from 'rxjs';
 
-const ELEMENT_DATA: User[] = [
-  {
-    id: 1,
-    name: 'Marcos',
-    surname: 'Rojo',
-    email: 'marcosrojo@mail.com',
-    password: '123456',
-  },
-  {
-    id: 2,
-    name: 'Federico',
-    surname: 'Valverde',
-    email: 'fedeverde@mail.com',
-    password: 'abc123',
-  },
-];
 
 
 @Component({
@@ -26,63 +12,61 @@ const ELEMENT_DATA: User[] = [
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss']
 })
-export class UsersComponent {
-  public users: User[] = ELEMENT_DATA;
+export class UsersComponent implements OnDestroy {
+  public users: Observable<User[]>;
+  public destroyed = new Subject<boolean>();
 
+  public loading = false;
 
   constructor(
-    private matDialog: MatDialog
-  ){}
+    private matDialog: MatDialog,
+    private userService: UserService,
+  ) {
+    this.userService.loadUsers();
+    this.users = this.userService.getUsers();
+  }
 
-  onCreateUser(): void{
+  ngOnDestroy(): void {
+    this.destroyed.next(true);
+  }
+
+  onCreateUser(): void {
     const dialogRef = this.matDialog.open(UserFormDialogComponent);
 
     dialogRef.afterClosed().subscribe({
       next: (v) => {
         if (v) {
-          this.users = [
-            ...this.users,
-            {
-              id: this.users.length + 1,
-              name: v.name,
-              email: v.email,
-              password: v.password,
-              surname: v.surname
-            },
-          ];
-          console.log('Recibimos el valor: ', v);
-        } else {
-          console.log('Se cancelo');
+          this.userService.createUser({
+            name: v.name,
+            email: v.email,
+            password: v.password,
+            surname: v.surname
+
+          });
         }
-        
       }
     })
 
   }
 
-  onDeleteUser(userToDelete: User): void{
+  onDeleteUser(userToDelete: User): void {
     if (confirm(`¿Está seguro de eliminar a ${userToDelete.name}?`)) {
-      this.users = this.users.filter((u) => u.id !== userToDelete.id);
+      this.userService.deleteUserById(userToDelete.id);
     }
   }
 
-  onEditUser(userToEdit: User): void{
+  onEditUser(userToEdit: User): void {
     const dialogRef = this.matDialog.open(UserFormDialogComponent, {
       data: userToEdit
     });
 
     dialogRef.afterClosed().subscribe({
       next: (userUpdated) => {
-        console.log(userUpdated);
         if (userUpdated) {
-          this.users = this.users.map((user) => {
-            return user.id === userToEdit.id
-              ? {...user,...userUpdated}
-              : user
-          }); 
+          this.userService.updateUserById(userToEdit.id, userUpdated);
         }
-      }
-    })
+      },
+    });
   }
 
 }

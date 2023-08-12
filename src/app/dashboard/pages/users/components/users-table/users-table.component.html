@@ -23,13 +23,15 @@
         <th mat-header-cell *matHeaderCellDef> Acciones </th>
         <td mat-cell *matCellDef="let user">
 
-            <button (click)="editUser.emit(user)" type="button" mat-mini-fab color="accent">
+            <button [routerLink]="user.id" mat-icon-button color="accent">
+                <mat-icon>visibility</mat-icon>
+            </button>
+
+            <button (click)="editUser.emit(user)" mat-icon-button color="accent">
                 <mat-icon>edit</mat-icon>
             </button>
 
-            &nbsp;
-
-            <button (click)="deleteUser.emit(user)" type="button" mat-mini-fab color="warn">
+            <button (click)="deleteUser.emit(user)" mat-icon-button color="warn">
                 <mat-icon>delete</mat-icon>
             </button>
 

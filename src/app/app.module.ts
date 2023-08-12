@@ -5,6 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DashboardModule } from './dashboard/dashboard.module';
+import { MatCardModule } from '@angular/material/card';
+import { AuthModule } from './auth/auth.module';
+import { CoursesModule } from './dashboard/pages/courses/courses.module';
+import { TeachersModule } from './dashboard/pages/teachers/teachers.module';
+
+
 
 @NgModule({
   declarations: [
@@ -14,7 +20,11 @@ import { DashboardModule } from './dashboard/dashboard.module';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    DashboardModule
+    DashboardModule,
+    MatCardModule,
+    AuthModule,
+    CoursesModule,
+    TeachersModule
   ],
   providers: [],
   bootstrap: [AppComponent]

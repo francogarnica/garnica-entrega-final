@@ -1,0 +1,128 @@
+{
+  "users": [
+    {
+      "name": "Federico",
+      "surname": "Valverde",
+      "email": "fedeverde@yahoo.com",
+      "password": "123456",
+      "token": "BGkTbFEe2XWls11WzLIt",
+      "role": "admin",
+      "id": 1
+    },
+    {
+      "name": "Franco",
+      "email": "franco.garnica@yahoo.com",
+      "password": "franco",
+      "surname": "Garnica",
+      "token": "FGkvbFYeVXWls01Wzkit",
+      "id": 2,
+      "role": "user"
+    },
+    {
+      "name": "Poco",
+      "email": "pococo@mail.com",
+      "password": "qwdgopo1",
+      "surname": "Pocoyo",
+      "role": "admin",
+      "token": "cYHc02zCzMphnD56NxQU",
+      "id": 3
+    },
+    {
+      "name": "Nombre",
+      "email": "onomb@mail.com",
+      "password": "fqwe122a",
+      "surname": "Apellido",
+      "role": "user",
+      "token": "PmTI80RyPp2jknayDmun",
+      "id": 4
+    }
+  ],
+  "courses": [
+    {
+      "id": 1,
+      "name": "Ilustracion Digital",
+      "price": 35000,
+      "description": "Aprende a dibujar en digital",
+      "duration": "12 semanas"
+    },
+    {
+      "id": 2,
+      "name": "Python",
+      "price": 40000,
+      "description": "Aprende uno de los lenguajes de programacion mas usados",
+      "duration": "15 semanas"
+    },
+    {
+      "id": 3,
+      "name": "Desarrollo Web",
+      "price": 42000,
+      "description": "Aprende HTML, CSS Y JS para realizar paginas",
+      "duration": "14 semanas"
+    },
+    {
+      "name": "Ciberseguridad",
+      "price": 70000,
+      "description": "Aprende ciberseguridad",
+      "duration": "15 semanas",
+      "id": 4
+    }
+  ],
+  "teachers": [
+    {
+      "id": 1,
+      "name": "Franco",
+      "surname": "Garnica",
+      "email": "franco.garnica@yahoo.com",
+      "courseId": 1
+    },
+    {
+      "name": "Gonzalo",
+      "surname": "Banzas",
+      "email": "gonbanzas@mail.com",
+      "courseId": 2,
+      "id": 2
+    }
+  ],
+  "students": [
+    {
+      "name": "Maximiliano",
+      "surname": "Roca",
+      "email": "rocamaxi@mail.com",
+      "id": 1
+    },
+    {
+      "name": "Maria",
+      "surname": "Dolores",
+      "email": "maridol@email.com",
+      "id": 2
+    },
+    {
+      "name": "Antonio",
+      "surname": "Romero",
+      "email": "antomero@gmail.com",
+      "id": 3
+    }
+  ],
+  "inscriptions": [
+    {
+      "courseId": 1,
+      "studentId": 1,
+      "id": 1
+    },
+    {
+      "courseId": 2,
+      "studentId": 2,
+      "id": 2
+    },
+    {
+      "courseId": 3,
+      "studentId": 3,
+      "id": 3
+    },
+    {
+      "courseId": 4,
+      "studentId": 1,
+      "id": 4
+    }
+  ]
+}

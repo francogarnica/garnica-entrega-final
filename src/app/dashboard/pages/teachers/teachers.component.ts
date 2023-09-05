@@ -1,7 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Teacher } from './models';
 import { TeacherService } from './teacher.service';
 import { Observable } from 'rxjs';
+import { Store } from '@ngrx/store';
+import { selectIsAdmin } from 'src/app/store/auth/auth.selectors';
+import { selectTeachers } from './store/teacher.selectors';
+import { TeacherActions } from './store/teacher.actions';
+import { MatDialog } from '@angular/material/dialog';
+import { TeacherDialogComponent } from './components/teacher-dialog/teacher-dialog.component';
 
 @Component({
   selector: 'app-teachers',
@@ -9,26 +15,35 @@ import { Observable } from 'rxjs';
   styles: [
   ]
 })
-export class TeachersComponent implements OnInit {
+export class TeachersComponent implements OnInit{
+
+
   public dataSource: Teacher[] = [];
 
-  public data$: Observable<Teacher[]>;
+  teachers$: Observable<Teacher[]>;
+
+  public isAdmin$: Observable<boolean>;
 
   public displayedColumns = ['id', 'name', 'surname', 'email', 'actions'];
-  constructor(private teacherService: TeacherService) {
-    this.data$ = this.teacherService.getTeachers();
 
+
+  constructor(private store: Store, private matDialog: MatDialog, private teachersService: TeacherService) {
+    this.teachers$ = this.store.select(selectTeachers);
+    this.isAdmin$ = this.store.select(selectIsAdmin);
+
+  }
+
+  onAdd(): void {
+    this.matDialog.open(TeacherDialogComponent);
   }
 
   ngOnInit(): void {
-    this.teacherService.loadTeachers();
-  }
-
-  onCreate(): void {
-    this.teacherService.create();
+    this.store.dispatch(TeacherActions.loadTeachers())
   }
 
   onDelete(id: number): void {
-    this.teacherService.deleteById(id);
+    this.teachersService.deleteTeacherById(id);
+    
   }
+
 }

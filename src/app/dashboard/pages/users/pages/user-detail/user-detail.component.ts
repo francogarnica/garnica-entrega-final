@@ -4,11 +4,11 @@ import { NotifierService } from 'src/app/core/services/notifier.service';
 import { User } from '../../components/models';
 import { UserService } from '../../user.service';
 
+
 @Component({
   selector: 'app-user-detail',
   templateUrl: './user-detail.component.html',
-  styles: [
-  ]
+  styles: ['./user-detail.component.scss']
 })
 export class UserDetailComponent {
   public user: User | null = null;
@@ -34,13 +34,10 @@ export class UserDetailComponent {
         next: (user) => console.log(user),
       })
     }
-    // coursesService.getCoursesByUserID(this.activatedRoute.snapshot.paramMap.get('id')),
-    // usersService.getUserById(this.activatedRoute.snapshot.paramMap.get('id')).subscribe({
-    //     next: (user) => {
-    //       this.user = user;
-    //     }
-    //   })
+
   }
+
+
 
 
 

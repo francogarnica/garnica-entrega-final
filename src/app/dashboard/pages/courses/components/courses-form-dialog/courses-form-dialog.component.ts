@@ -2,14 +2,15 @@ import { Component, Inject } from '@angular/core';
 import { Course } from '../../models';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { CoursesActions } from '../../store/courses.actions';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-courses-form-dialog',
   templateUrl: './courses-form-dialog.component.html',
-  styleUrls: ['./courses-form-dialog.component.scss']
+  styleUrls: []
 })
 export class CoursesFormDialogComponent {
-  editingCourse?: Course;
   nameControl = new FormControl<string | null>(null, [Validators.required, Validators.minLength(2), Validators.maxLength(20)]);
   priceControl = new FormControl<number | null>(null, [Validators.required, Validators.min(1), Validators.max(99999)]);
   descriptionControl = new FormControl<string | null>(null, [Validators.required]);
@@ -22,24 +23,20 @@ export class CoursesFormDialogComponent {
     duration: this.durationControl
   });
 
-  constructor(private dialogRef: MatDialogRef<CoursesFormDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) private data?: Course,
-  ) {
-    if (this.data) {
-      this.editingCourse = this.data;
-      this.nameControl.setValue(this.data.name);
-      this.priceControl.setValue(this.data.price);
-      this.descriptionControl.setValue(this.data.description);
-      this.durationControl.setValue(this.data.duration);
-    }
+  constructor(private store: Store, private matDialogRef: MatDialogRef<CoursesFormDialogComponent>) {
+    
   }
 
+  ngOnInit(): void{
+    this.store.dispatch(CoursesActions.loadCourses());
+  }
 
   onSubmit(): void {
     if (this.courseForm.invalid) {
       this.courseForm.markAllAsTouched();
     } else {
-      this.dialogRef.close(this.courseForm.value);
+      this.store.dispatch(CoursesActions.createCourse({ payload: this.courseForm.getRawValue() }));
+      this.matDialogRef.close();
     }
   }
 }

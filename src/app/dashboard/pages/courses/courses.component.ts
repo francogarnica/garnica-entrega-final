@@ -1,9 +1,14 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Course } from './models';
 import { CourseService } from './course.service';
 import { Observable, Subject } from 'rxjs';
 import { CoursesFormDialogComponent } from './components/courses-form-dialog/courses-form-dialog.component';
+import { Store } from '@ngrx/store';
+import { CoursesActions } from './store/courses.actions';
+import { selectCoursesArray } from './store/courses.selectors';
+import { selectIsAdmin } from 'src/app/store/auth/auth.selectors';
+
 
 @Component({
   selector: 'app-courses',
@@ -11,55 +16,37 @@ import { CoursesFormDialogComponent } from './components/courses-form-dialog/cou
   styles: [
   ]
 })
-export class CoursesComponent implements OnDestroy {
-  public courses: Observable<Course[]>;
-  public destroyed = new Subject<boolean>();
+export class CoursesComponent implements OnInit {
 
-  constructor(private matDialog: MatDialog, private courseService: CourseService) {
-    this.courseService.loadCourses();
-    this.courses = this.courseService.getCourses();
+  public dataSource: Course[] = [];
+
+  courses$: Observable<Course[]>;
+
+  public isAdmin$: Observable<boolean>;
+
+  displayedColumns = ['id', 'name', 'price', 'description', 'duration', 'actions']
+
+  constructor(private store: Store, private matDialog: MatDialog, private coursesService: CourseService) {
+    this.courses$ = this.store.select(selectCoursesArray);
+    this.isAdmin$ = this.store.select(selectIsAdmin);
   }
 
-  ngOnDestroy(): void {
-    this.destroyed.next(true);
+
+  
+
+  onAdd(): void {
+    this.matDialog.open(CoursesFormDialogComponent);
   }
 
-  onCreateCourse(): void {
-    const dialogRef = this.matDialog.open(CoursesFormDialogComponent);
-
-    dialogRef.afterClosed().subscribe({
-      next: (v) => {
-        if (v) {
-          this.courseService.createCourse({
-            name: v.name,
-            price: v.price,
-            description: v.description,
-            duration: v.duration
-
-          });
-        }
-      }
-    })
+  ngOnInit(): void {
+    this.store.dispatch(CoursesActions.loadCourses())
   }
 
-  onDeleteCourse(courseToDelete: Course): void {
-    if (confirm(`¿Está seguro de eliminar a ${courseToDelete.name}?`)) {
-      this.courseService.deleteCourseById(courseToDelete.id);
-    }
-  }
 
-  onEditCourse(courseToEdit: Course): void {
-    const dialogRef = this.matDialog.open(CoursesFormDialogComponent, {
-      data: courseToEdit
-    });
+  onDelete(id: number): void {
+    this.coursesService.deleteCourseById(id);
 
-    dialogRef.afterClosed().subscribe({
-      next: (courseUpdated) => {
-        if (courseUpdated) {
-          this.courseService.updateCourseById(courseToEdit.id, courseUpdated);
-        }
-      },
-    });
   }
 
 }
+

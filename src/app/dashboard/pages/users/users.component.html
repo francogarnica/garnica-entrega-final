@@ -4,8 +4,11 @@
         Crear usuario
     </button>
 </div>
-
 <h1 appAgrandado="20px"> Lista de usuarios: </h1>
 
-<app-users-table [dataSource]="( users | async) || []" (deleteUser)="onDeleteUser($event)"
-    (editUser)="onEditUser($event)"></app-users-table>
+<div *ngIf="isLoading$ | async; else notLoadingTemplate"> Cargando datos...</div>
+
+<ng-template #notLoadingTemplate>
+    <app-users-table [dataSource]="( users | async) || []" (deleteUser)="onDeleteUser($event)"
+        (editUser)="onEditUser($event)"></app-users-table>
+</ng-template>

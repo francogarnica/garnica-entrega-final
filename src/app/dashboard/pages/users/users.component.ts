@@ -4,6 +4,7 @@ import { UserFormDialogComponent } from './components/user-form-dialog/user-form
 import { User } from './components/models';
 import { UserService } from './user.service';
 import { Observable, Subject } from 'rxjs';
+import Swal from 'sweetalert2';
 
 
 
@@ -14,6 +15,7 @@ import { Observable, Subject } from 'rxjs';
 })
 export class UsersComponent implements OnDestroy {
   public users: Observable<User[]>;
+  public isLoading$: Observable<boolean>;
   public destroyed = new Subject<boolean>();
 
   public loading = false;
@@ -23,6 +25,7 @@ export class UsersComponent implements OnDestroy {
     private userService: UserService,
   ) {
     this.userService.loadUsers();
+    this.isLoading$ = this.userService.isLoading$;
     this.users = this.userService.getUsers();
   }
 
@@ -40,17 +43,30 @@ export class UsersComponent implements OnDestroy {
             name: v.name,
             email: v.email,
             password: v.password,
-            surname: v.surname
-
+            surname: v.surname,
+            role: v.role,
           });
+          Swal.fire(
+            'Usuario Agregado',
+            '',
+            'success'
+          )
         }
       }
+
+
     })
+
 
   }
 
   onDeleteUser(userToDelete: User): void {
     if (confirm(`¿Está seguro de eliminar a ${userToDelete.name}?`)) {
+      Swal.fire(
+        'Usuario Eliminado',
+        '',
+        'error'
+      )
       this.userService.deleteUserById(userToDelete.id);
     }
   }

@@ -1,57 +1,44 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, take } from 'rxjs';
 import { Teacher } from './models';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeacherService {
-  private teachers$ = new BehaviorSubject<Teacher[]>([]);
+  private _teachers$ = new BehaviorSubject<Teacher[]>([]);
+  public teachers$ = this._teachers$.asObservable();
+  private readonly baseUrl = environment.baseApiUrl + '/teachers';
 
-  constructor() { }
+  constructor(private httpClient: HttpClient) { }
 
   getTeachers(): Observable<Teacher[]> {
-    return this.teachers$.asObservable();
+    return this._teachers$.asObservable();
   }
 
   loadTeachers(): void {
-    this.teachers$.next([
-      {
-        id: 1,
-        name: 'Franco',
-        surname: 'Garnica',
-        email: 'franco.garnica@yahoo.com'
+    this.httpClient.get<Teacher[]>(this.baseUrl).subscribe({
+      next: (teachers) => {
+        this._teachers$.next(teachers); //EMITIR LOS DATOS AL BEHAVIOR SUBJECT 
       },
-      {
-        id: 2,
-        name: 'Gonzalo',
-        surname: 'Banzas',
-        email: 'gobanzas@yahoo.com'
+      error: () => {
+        //Manejar error al cargar los compradores
       }
-
-    ])
+    });
   }
 
-  create(): void {
-    this.teachers$.pipe(take(1)).subscribe({
-      next: (arrayActual) => {
-        arrayActual.push({
-          id: arrayActual.length + 1,
-          name: 'Random name',
-          surname: 'Random surname',
-          email: 'random@email',
-        });
-
-        this.teachers$.next([...arrayActual]);
+  deleteTeacherById(id: number): void {
+    this.httpClient.delete(this.baseUrl + '/' + id).subscribe({
+      next: () => {
+        this.loadTeachers();
+        window.location.reload(); //Recargar el listado despues de eliminar uno
+      },
+      error: () => {
+        //manejar error al cargar los compradores
       }
-    })
+    });
   }
 
-  deleteById(id: number): void {
-    this.teachers$.pipe(take(1)).subscribe({
-      next: (arrayActual) => {
-        this.teachers$.next(arrayActual.filter((p) => p.id !== id));
-      }
-    })
-  }
 }

@@ -29,13 +29,23 @@
         </div>
 
         <!-- CAMPO DE EMAIL -->
-        <div class="col-12 field">
+        <div class="field col-6 field">
             <mat-form-field class="w-full" appearance="outline">
                 <mat-label>Email</mat-label>
                 <input formControlName="email" matInput type="email" name="email">
                 <mat-error *ngFor="let error of emailControl.errors | keyvalue">
                     {{ error | controlErrorMessage }}
                 </mat-error>
+            </mat-form-field>
+        </div>
+
+        <div class="col-6">
+            <mat-form-field class="w-full">
+                <mat-label>Rol</mat-label>
+                <mat-select formControlName="role">
+                    <mat-option value="admin">Administrador</mat-option>
+                    <mat-option value="user">usuario</mat-option>
+                </mat-select>
             </mat-form-field>
         </div>
 

@@ -1,97 +1,46 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, Subject, delay, map, of, take } from 'rxjs';
-import { Course, CreateCourseData, UpdateCourseData } from './models';
-import { NotifierService } from 'src/app/core/services/notifier.service';
-
-const COURSE_DB: Observable<Course[]> = of([
-  {
-    id: 1,
-    name: 'Ilustracion Digital',
-    price: 35000,
-    description: 'lorem ipsum',
-    duration: '12 semanas',
-  },
-  {
-    id: 2,
-    name: 'Python',
-    price: 40000,
-    description: 'lorem ipsum',
-    duration: '15 semanas',
-  },
-  {
-    id: 3,
-    name: 'Desarrollo Web',
-    price: 42000,
-    description: 'lorem ipsum',
-    duration: '14 semanas',
-  },
-]).pipe(delay(1000));
-
+import { BehaviorSubject, Observable } from 'rxjs';
+import { Course } from './models';
+import { environment } from 'src/environments/environment';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CourseService {
-  private sendNotification$ = new Subject<string>();
+
+
   private _courses$ = new BehaviorSubject<Course[]>([]);
-  private courses$ = this._courses$.asObservable();
+  public courses$ = this._courses$.asObservable();
+  private readonly baseUrl = environment.baseApiUrl + '/courses';
 
-  constructor(private notifier: NotifierService) {
-    this.sendNotification$.subscribe({
-      next: (message) => alert(message),
-    })
-  }
+  constructor(private httpClient: HttpClient) { }
 
-  sendNotification(notification: string): void {
-    this.sendNotification$.next(notification);
+  getCourses(): Observable<Course[]> {
+    return this._courses$.asObservable();
   }
 
   loadCourses(): void {
-    COURSE_DB.subscribe({
-      next: (cursosFromDb) => this._courses$.next(cursosFromDb)
-    })
-  }
-
-  getCourses(): Observable<Course[]> {
-    return this.courses$;
-  }
-
-  getCourseById(id: number): Observable<Course | undefined> {
-    return this.courses$.pipe(
-      take(1),
-      map((courses) => courses.find((u) => u.id === id)),
-    )
-  }
-
-
-  createCourse(course: CreateCourseData): void {
-    this.courses$.pipe(take(1)).subscribe({
-      next: (arrayActual) => {
-        this._courses$.next([...arrayActual, { ...course, id: arrayActual.length + 1 }]);
-        this.notifier.showSuccess('Curso creado');
-      }
-    });
-  }
-
-  updateCourseById(id: number, cursoActualizado: UpdateCourseData): void {
-    this.courses$.pipe(take(1)).subscribe({
-      next: (arrayActual) => {
-        this._courses$.next(
-          arrayActual.map((u) => u.id === id ? { ...u, ...cursoActualizado } : u
-          )
-        );
-        this.notifier.showSuccess('Curso actualizado')
+    this.httpClient.get<Course[]>(this.baseUrl).subscribe({
+      next: (courses) => {
+        this._courses$.next(courses); //EMITIR LOS DATOS AL BEHAVIOR SUBJECT 
       },
+      error: () => {
+        //Manejar error al cargar los compradores
+      }
     });
   }
 
   deleteCourseById(id: number): void {
-    this._courses$.pipe(take(1)).subscribe({
-      next: (arrayActual) => {
-        this._courses$.next(arrayActual.filter((c) => c.id !== id));
-        this.notifier.showSuccess('Curso eliminado')
+    this.httpClient.delete(this.baseUrl + '/' + id).subscribe({
+      next: () => {
+        this.loadCourses();
+        window.location.reload(); //Recargar el listado despues de eliminar uno
+      },
+      error: () => {
+        //manejar error al cargar los compradores
       }
-    })
+    });
   }
 
 }

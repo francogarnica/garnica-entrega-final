@@ -12,6 +12,8 @@ import { MatListModule } from '@angular/material/list';
 import { NavMenuComponent } from './layout/nav-menu/nav-menu.component';
 import { ToolbarComponent } from './layout/toolbar/toolbar.component';
 import { TeachersComponent } from './pages/teachers/teachers.component';
+import { DashboardRoutingModule } from './dashboard-routing.module';
+import { CoursesModule } from './pages/courses/courses.module';
 
 
 
@@ -34,6 +36,8 @@ import { TeachersComponent } from './pages/teachers/teachers.component';
     RouterModule,
     UsersModule,
     MatListModule,
+    CoursesModule, //cursos
+    DashboardRoutingModule //Modulo de rutas
 
   ],
   exports: [
